@@ -3,15 +3,15 @@ const request = require('request')
 
 const forecast = (latitude, longitude, callback) => {
     
-    const fcUrl = `${config.weatherStack.url}/current?access_key=${config.weatherStack.key}&query=` + latitude + `,` + longitude
+    const fcUrl = `${config.weatherStack.baseUrl}/current?access_key=${config.weatherStack.key}&query=` + latitude + `,` + longitude
     
-    request ({ url: fcUrl, json: true}, (error, response) =>{
+    request ({ url: fcUrl, json: true}, (error,  { body }) =>{
         if (error) {
             callback('Uable to connect to weather stack services', undefined)
-        } else if (response.body.error) {
+        } else if (body.error) {
             callback('Unable to find location. Try another search', undefined)
         } else {
-            callback(undefined, 'In ' + response.body.location.name + ', it is currently ' + response.body.current.weather_descriptions + ' and the tempreture is ' + response.body.current.temperature + ' degress out. There is a ' + response.body.current.precip + '% chance of rain.')     
+            callback(undefined, 'In ' + body.location.name + ', '+ body.location.region + ', it is currently ' + body.current.weather_descriptions + ' and the tempreture is ' + body.current.temperature + ' degress out. There is a ' + body.current.precip + '% chance of rain.')     
             
         }
     })
